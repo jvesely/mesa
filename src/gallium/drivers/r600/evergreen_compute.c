@@ -543,10 +543,8 @@ static void evergreen_compute_upload_input(struct pipe_context *ctx,
 
 	if (!shader)
 		return;
-	if (shader->input_size == 0) {
-		return;
-	}
 	input_size = shader->input_size + 36;
+
 	if (!shader->kernel_param) {
 		/* Add space for the grid dimensions */
 		shader->kernel_param = (struct r600_resource *)
