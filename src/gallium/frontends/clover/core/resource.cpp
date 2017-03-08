@@ -205,7 +205,23 @@ root_resource::root_resource(clover::device &dev, memory_obj &obj,
 root_resource::root_resource(clover::device &dev, memory_obj &obj,
                              root_resource &r) :
    resource(dev, obj) {
-   assert(0); // XXX -- resource shared among dev and r.dev
+   assert(r.device().pipe == r.pipe->screen);
+   struct winsys_handle h;
+   memset(&h, 0, sizeof(h));
+   //TODO: Why FD? What else do we need to set?
+   //TODO: How do I know the usage flags? just assume SHADER_WRITE for now correct?
+   h.type = WINSYS_HANDLE_TYPE_FD;
+   if (!r.device().pipe->resource_get_handle(r.device().pipe, NULL, r.pipe, &h,
+                                             PIPE_HANDLE_USAGE_SHADER_WRITE))
+      throw error(CL_OUT_OF_RESOURCES);
+
+   pipe_resource *lpipe = device().pipe->resource_from_handle(device().pipe,
+                                                              r.pipe, &h,
+                                                              PIPE_HANDLE_USAGE_SHADER_WRITE);
+   if (!lpipe)
+      throw error(CL_MEM_OBJECT_ALLOCATION_FAILURE);
+   pipe_resource_reference(&this->pipe, lpipe);
+//   assert(0); // XXX -- resource shared among dev and r.dev
 }
 
 root_resource::~root_resource() {
