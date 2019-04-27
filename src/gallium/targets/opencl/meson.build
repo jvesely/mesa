@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-opencl_link_args = []
+opencl_link_args = [ld_args_no_undefined]
 opencl_link_deps = []
 opencl_version = '1'
 
