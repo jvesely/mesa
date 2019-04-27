@@ -1074,6 +1074,12 @@ ld_args_build_id = []
 if build_machine.system() != 'darwin'
    ld_args_build_id += '-Wl,--build-id=sha1'
 endif
+ld_args_no_undefined = []
+if cc.links('int main() { return 0; }',
+            args : '-Wl,--no-undefined',
+            name : 'no-undefined')
+  ld_args_no_undefined = '-Wl,--no-undefined'
+endif
 
 # check for dl support
 if cc.has_function('dlopen')
